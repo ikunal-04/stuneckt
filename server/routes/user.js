@@ -123,15 +123,37 @@ router.post('/follow/:userId', authMiddleware, async (req, res) => {
 
 router.get('/followers', authMiddleware, async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 5;
+        const skip = (page - 1) * limit;
+
+        const totalFollowers = await User.countDocuments({ userId: req.userId });
+        const totalPages = Math.ceil(totalFollowers / limit);
+
         const currentUser = await User.findById(req.userId);
 
         if (!currentUser) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const followers = await User.find({ _id: { $in: currentUser.followers } });
+        const followers = await User.find({ _id: { $in: currentUser.followers } }).skip(skip).limit(limit);
 
-        return res.status(200).json({ followers });
+        let nextPage = null;
+        let prevPage = null;
+        if (page < totalPages) {
+            nextPage = `/api/user/followers?page=${page + 1}&limit=${limit}`;
+        }
+        if (page > 1) {
+            prevPage = `/api/user/followers?page=${page - 1}&limit=${limit}`;
+        }
+
+        return res.status(200).json({ 
+            followers,
+            totalPages,
+            currentPage: page,
+            nextPage,
+            prevPage
+        });
     } catch (error) {
         console.error("Error in getting followers:", error);
         return res.status(500).json({ message: "Internal server error" });

@@ -32,9 +32,30 @@ router.post('/create', authMiddleware,async (req, res) => {
 
 router.get('/allposts', authMiddleware, async (req, res) => {
     try {
-        const posts = await Posts.find();
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 5;
+        const skip = (page - 1) * limit;
+
+        const totalPosts = await Posts.countDocuments();
+        const totalPages = Math.ceil(totalPosts / limit);
+
+        const posts = await Posts.find().skip(skip).limit(limit);
+
+        let nextPage = null;
+        let prevPage = null;
+        if (page < totalPages) {
+            nextPage = `/api/posts/allposts?page=${page + 1}&limit=${limit}`;
+        }
+        if (page > 1) {
+            prevPage = `/api/posts/allposts?page=${page - 1}&limit=${limit}`;
+        }
+
         return res.status(200).json({
-            posts
+            posts,
+            totalPages,
+            currentPage: page,
+            nextPage,
+            prevPage
         });
     } catch (error) {
         console.log("Error in getting posts", error);
@@ -44,14 +65,34 @@ router.get('/allposts', authMiddleware, async (req, res) => {
 router.get('/userposts', authMiddleware, async (req, res) => {
     try {
         // console.log(req.userId);
-        const post = await Posts.find({ userId: req.userId });
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 5;
+        const skip = (page - 1) * limit;
+
+        const totalPosts = await Posts.countDocuments({ userId: req.userId });
+        const totalPages = Math.ceil(totalPosts / limit);
+
+        const post = await Posts.find({ userId: req.userId }).skip(skip).limit(limit);
+
+        let nextPage = null;
+        let prevPage = null;
+        if (page < totalPages) {
+            nextPage = `/api/posts/userposts?page=${page + 1}&limit=${limit}`;
+        }
+        if (page > 1) {
+            prevPage = `/api/posts/userposts?page=${page - 1}&limit=${limit}`;
+        }
 
         if (!post || post.length === 0) {
             return res.status(404).json({ message: "No posts found for this user" });
         }
 
         return res.status(200).json({
-            post
+            post,
+            totalPages,
+            currentPage: page,
+            nextPage,
+            prevPage
         });
     } catch (error) {
         console.log("Error in getting post", error);
