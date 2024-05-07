@@ -56,6 +56,6 @@ router.get('/userposts', authMiddleware, async (req, res) => {
     } catch (error) {
         console.log("Error in getting post", error);
     }
-})
+});
 
 module.exports = router;

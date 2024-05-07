@@ -87,4 +87,55 @@ router.get('/profile', authMiddleware, async (req, res) => {
     });
 });
 
+router.post('/follow/:userId', authMiddleware, async (req, res) => {
+    try {
+        const { userId } = req.params;
+        console.log(userId);
+        const userToFollow = await User.findById(userId);
+
+        if (!userToFollow) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const currentUser = await User.findById(req.userId);
+        console.log(req.userId);
+
+        if (!currentUser) {
+            return res.status(404).json({ message: "Current user not found" });
+        }
+
+        if (currentUser.following.includes(userId)) {
+            return res.status(400).json({ message: "You are already following this user" });
+        }
+
+        currentUser.following.push(userId);
+        await currentUser.save();
+
+        userToFollow.followers.push(req.userId);
+        await userToFollow.save();
+
+        return res.status(200).json({ message: "Successfully followed user" });
+    } catch (error) {
+        console.error("Error in following user:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+router.get('/followers', authMiddleware, async (req, res) => {
+    try {
+        const currentUser = await User.findById(req.userId);
+
+        if (!currentUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const followers = await User.find({ _id: { $in: currentUser.followers } });
+
+        return res.status(200).json({ followers });
+    } catch (error) {
+        console.error("Error in getting followers:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+});
+
 module.exports = router;   
