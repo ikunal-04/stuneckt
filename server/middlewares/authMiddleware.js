@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const User = require('../db/userdb');
+const User = require('../models/userdb');
 
 require('dotenv').config();
 
@@ -14,7 +14,7 @@ async function authMiddleware(req, res, next) {
                 message: "Unauthorized"
             });
         }
-        
+
         req.userId = user._id;
         next();
     } catch (error) {

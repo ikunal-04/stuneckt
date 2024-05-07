@@ -2,7 +2,7 @@ const express = require('express');
 const { userSchemalogin, userSchemaUpdate } = require('../types/userSchema');
 const jwt = require('jsonwebtoken');
 const bcyrpt = require('bcrypt');
-const User = require('../db/userdb');
+const User = require('../models/userdb');
 const authMiddleware = require('../middlewares/authMiddleware');
 
 const router = express.Router();
@@ -11,7 +11,7 @@ router.post('/login', async (req, res) => {
     const payLoad = req.body;
     try {
         const { success } = userSchemalogin.safeParse(payLoad);
-        
+
         if (!success) {
             return res.status(400).json({
                 message: "wrong inputs, invalid data"
@@ -22,7 +22,7 @@ router.post('/login', async (req, res) => {
             email: payLoad.email
         })
 
-        if(!user) {
+        if (!user) {
             const salt = await bcyrpt.genSalt(10);
             const hashedPassword = await bcyrpt.hash(payLoad.password, salt);
 
@@ -46,7 +46,7 @@ router.post('/login', async (req, res) => {
             message: "User logged in successfully",
             token
         });
-        
+
     } catch (error) {
         console.log(error);
     }
@@ -147,7 +147,7 @@ router.get('/followers', authMiddleware, async (req, res) => {
             prevPage = `/api/user/followers?page=${page - 1}&limit=${limit}`;
         }
 
-        return res.status(200).json({ 
+        return res.status(200).json({
             followers,
             totalPages,
             currentPage: page,

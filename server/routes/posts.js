@@ -1,7 +1,7 @@
 const express = require('express');
-const Posts = require('../db/postsdb');
+const Posts = require('../models/postsdb');
 const { postSchema } = require('../types/postsSchema');
-const User = require('../db/userdb');
+const User = require('../models/userdb');
 const authMiddleware = require('../middlewares/authMiddleware');
 
 const router = express.Router();
