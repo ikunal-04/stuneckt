@@ -1,12 +1,20 @@
-import { Button } from "@/components/ui/button"
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import MyProfile from './pages/MyProfile';
+import CreatePosts from './pages/CreatePosts';
 
 function App() {
 
   return (
-    <div className="">
-      <h1>App</h1>
-      <Button>Save</Button>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Login />} path='/'/>
+        <Route element={<Dashboard />} path='/dashboard'/>
+        <Route element={<MyProfile />} path='/my-profile'/>
+        <Route element={<CreatePosts />} path='/create-posts'/>
+      </Routes>
+    </BrowserRouter>
   )
 }
 

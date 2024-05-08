@@ -104,14 +104,14 @@ router.post('/follow/:userId', authMiddleware, async (req, res) => {
             return res.status(404).json({ message: "Current user not found" });
         }
 
-        if (currentUser.following.includes(userId)) {
+        if (currentUser.following.includes(userToFollow.name)) {
             return res.status(400).json({ message: "You are already following this user" });
         }
 
-        currentUser.following.push(userId);
+        currentUser.following.push(userToFollow.name);
         await currentUser.save();
 
-        userToFollow.followers.push(req.userId);
+        userToFollow.followers.push(currentUser.name);
         await userToFollow.save();
 
         return res.status(200).json({ message: "Successfully followed user" });
@@ -136,7 +136,10 @@ router.get('/followers', authMiddleware, async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const followers = await User.find({ _id: { $in: currentUser.followers } }).skip(skip).limit(limit);
+        const followers = await Promise.all(currentUser.followers.slice(skip, skip + limit).map(async (followerId) => {
+            const follower = await User.findById(followerId);
+            return follower ? follower.name : null;
+        }));
 
         let nextPage = null;
         let prevPage = null;
