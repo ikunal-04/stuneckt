@@ -33,13 +33,13 @@ router.post('/create', authMiddleware,async (req, res) => {
 router.get('/allposts', authMiddleware, async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 5;
+        const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
 
         const totalPosts = await Posts.countDocuments();
         const totalPages = Math.ceil(totalPosts / limit);
 
-        const posts = await Posts.find().skip(skip).limit(limit);
+        const posts = await Posts.find().populate('userId', 'name').skip(skip).limit(limit);
 
         let nextPage = null;
         let prevPage = null;
@@ -66,13 +66,13 @@ router.get('/userposts', authMiddleware, async (req, res) => {
     try {
         // console.log(req.userId);
         const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 5;
+        const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
 
         const totalPosts = await Posts.countDocuments({ userId: req.userId });
         const totalPages = Math.ceil(totalPosts / limit);
 
-        const post = await Posts.find({ userId: req.userId }).skip(skip).limit(limit);
+        const post = await Posts.find({ userId: req.userId }).populate('userId', 'name').skip(skip).limit(limit);
 
         let nextPage = null;
         let prevPage = null;
