@@ -29,7 +29,7 @@ const Posts = () => {
     };
   
     useEffect(() => {
-      axios.get(`http://localhost:3000/api/posts/allposts?page=${currentPage}&limit=10`, config)
+      axios.get(`https://stuneckt-kunal-gargs-projects.vercel.app/api/posts/allposts?page=${currentPage}&limit=10`, config)
       .then((response: any) => {
         // console.log(response.data.posts);
         setAllPosts(response.data.posts);
@@ -42,7 +42,7 @@ const Posts = () => {
     },[currentPage]);
 
     useEffect(() => {
-      axios.get(`http://localhost:3000/api/posts/userposts?page=${currentPage}&limit=10`, config)
+      axios.get(`https://stuneckt-kunal-gargs-projects.vercel.app/api/posts/userposts?page=${currentPage}&limit=10`, config)
       .then((response: any) => {
         console.log(response.data);
         setUserPosts(response.data.post);

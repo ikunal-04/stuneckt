@@ -23,7 +23,7 @@ const Login = () => {
   async function handleSignin(e: any) {
     e.preventDefault();
     // console.log("Form Values");
-        await axios.post("http://localhost:3000/api/user/login", {
+        await axios.post("https://stuneckt-kunal-gargs-projects.vercel.app/api/user/login", {
             name: name,
             email: email,
             password: password,

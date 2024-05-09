@@ -35,7 +35,7 @@ const MyProfile = () => {
   };
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/user/profile', config)
+    axios.get('https://stuneckt-kunal-gargs-projects.vercel.app/api/user/profile', config)
     .then((response: any) => {
       console.log(response.data.user);
       setMyProfile(response.data.user);
@@ -53,7 +53,7 @@ const MyProfile = () => {
   async function handleUpdate(e: any) {
     e.preventDefault();
     // console.log("Form Values");
-        await axios.put("http://localhost:3000/api/user/update", {
+        await axios.put("https://stuneckt-kunal-gargs-projects.vercel.app/api/user/update", {
             name: name,
             email: email,
         },config).then(async (res) => {

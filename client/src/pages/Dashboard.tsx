@@ -30,7 +30,7 @@ const Dashboard = () => {
 
     const handleSubmit = async () => {
       try {
-        const res = await axios.post('http://localhost:3000/api/posts/create', 
+        const res = await axios.post('https://stuneckt-kunal-gargs-projects.vercel.app/api/posts/create', 
         { description }, config);
         console.log(res);
         toast({
