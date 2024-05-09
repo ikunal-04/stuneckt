@@ -16,7 +16,7 @@ const Login = () => {
 
   const handleChange = (e: any, setter: any) => {
     const value = e.target.value;
-    console.log(value);
+    // console.log(value);
     setter(value);
   }
 
