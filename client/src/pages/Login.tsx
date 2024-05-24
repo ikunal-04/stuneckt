@@ -70,6 +70,12 @@ const Login = () => {
                       <Button type="submit">Sign In</Button>
                   </div>
               </form> 
+              <div className='mt-4'>
+              Demo Credentials- <br />
+                <p>Name: test</p>
+                <p>Email: test@gmail.com</p>
+                <p>Password: test1234</p>
+              </div>
             </div>
         </div>
       </div>
